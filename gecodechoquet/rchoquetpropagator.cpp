@@ -107,7 +107,7 @@ ExecStatus RChoquetPropagator::propagate(Space& home, const ModEventDelta&)
 	double Res(Test->Compute(*this));
 	if(Res<-1.0||Res>1.0)
 		throw std::range_error("Cost function must be in [-1,1]");
-	if(Cost.eq(home,Res*Test->Precision)==Int::ME_INT_FAILED)
+	if(Cost.eq(home,static_cast<long long int>(Res*Test->Precision))==Int::ME_INT_FAILED)
 		return ES_FAILED;
 	return home.ES_SUBSUMED(*this);
 }

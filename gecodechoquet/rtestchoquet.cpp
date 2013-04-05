@@ -197,8 +197,8 @@ void RTestChoquet::AddConstraints(ROptimizeChoquet&)
 void RTestChoquet::Run(int dom,int precision)
 {
 	Domain=dom;
-	Max=pow(10,Domain);
-	Precision=pow(10,precision);
+	Max=std::pow(10,Domain);
+	Precision=std::pow(10,precision);
 	if(MustInit)
 	{
 		// Compute the number of parameters

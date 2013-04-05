@@ -85,8 +85,8 @@ ROptimizeChoquet::ROptimizeChoquet(RTestChoquet* test,size_t nbc,size_t nbi,int 
 	choquetPropagator(*this,Test,v,I,Cost);
 
 	// Make the branch
-	branch(*this,v, INT_VAR_SIZE_MIN, INT_VAL_MIN);
-	branch(*this,I, INT_VAR_SIZE_MIN, INT_VAL_MIN);
+	branch(*this,v,INT_VAR_SIZE_MIN(),INT_VAL_MIN());
+	branch(*this,I,INT_VAR_SIZE_MIN(),INT_VAL_MIN());
 }
 
 
