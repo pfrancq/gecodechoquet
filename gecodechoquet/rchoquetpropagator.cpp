@@ -35,6 +35,7 @@
 using namespace R;
 using namespace Gecode;
 using namespace Gecode::Int;
+using namespace Gecode::Float;
 
 
 
@@ -45,8 +46,8 @@ using namespace Gecode::Int;
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-RChoquetPropagator::RChoquetPropagator(Home home,RTestChoquet* test,IntVarArray& V,IntVarArray& i,IntView cost)
-	: Propagator(home), Test(test), v(home,V.size()), I(home,i.size()),Cost(cost)
+RChoquetPropagator::RChoquetPropagator(Home home,RTestChoquet* test,IntVarArray& V,IntVarArray& i,FloatView cost)
+	: Propagator(home), Test(test), v(home,V.size()), I(home,i.size()), Cost(cost)
 {
 	for(size_t j=0;j<V.size();j++)
 		v[j]=IntView(V[j]);
@@ -54,6 +55,7 @@ RChoquetPropagator::RChoquetPropagator(Home home,RTestChoquet* test,IntVarArray&
 		I[j]=IntView(i[j]);
 	v.subscribe(home,*this,PC_GEN_ASSIGNED);
 	I.subscribe(home,*this,PC_GEN_ASSIGNED);
+	Cost.subscribe(home,*this,PC_GEN_ASSIGNED);
 }
 
 
@@ -68,7 +70,7 @@ RChoquetPropagator::RChoquetPropagator(Space& home, bool share, RChoquetPropagat
 
 
 //-----------------------------------------------------------------------------
-ExecStatus RChoquetPropagator::post(Home home,RTestChoquet* test,IntVarArray& V,IntVarArray& i,IntView cost)
+ExecStatus RChoquetPropagator::post(Home home,RTestChoquet* test,IntVarArray& V,IntVarArray& i,FloatView cost)
 {
 	(void) new (home) RChoquetPropagator(home,test,V,i,cost);
 	return ES_OK;
@@ -80,6 +82,7 @@ size_t RChoquetPropagator::dispose(Space& home)
 {
 	v.cancel(home,*this,PC_GEN_ASSIGNED);
 	I.cancel(home,*this,PC_GEN_ASSIGNED);
+	Cost.cancel(home,*this,PC_GEN_ASSIGNED);
 	(void) Propagator::dispose(home);
 	return sizeof(*this);
 }
@@ -107,7 +110,7 @@ ExecStatus RChoquetPropagator::propagate(Space& home, const ModEventDelta&)
 	double Res(Test->Compute(*this));
 	if(Res<-1.0||Res>1.0)
 		throw std::range_error("Cost function must be in [-1,1]");
-	if(Cost.eq(home,static_cast<long long int>(Res*Test->Precision))==Int::ME_INT_FAILED)
+	if(Cost.eq(home,Res)==Float::ME_FLOAT_FAILED)
 		return ES_FAILED;
 	return home.ES_SUBSUMED(*this);
 }

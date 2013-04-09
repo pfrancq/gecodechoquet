@@ -67,7 +67,7 @@ struct RTestChoquet::Choquet
 
 //------------------------------------------------------------------------------
 RTestChoquet::RTestChoquet(size_t nbchoquets)
-	: NbChoquets(nbchoquets), Precision(0), Domain(0), Choquets(0), MustInit(true), CurSol(0), Search(0)
+	: NbChoquets(nbchoquets), Domain(0), Choquets(0), MustInit(true), CurSol(0), Search(0)
 {
 	Choquets=new Choquet[NbChoquets];
 }
@@ -194,11 +194,10 @@ void RTestChoquet::AddConstraints(ROptimizeChoquet&)
 
 
 //------------------------------------------------------------------------------
-void RTestChoquet::Run(int dom,int precision)
+void RTestChoquet::Run(int dom)
 {
 	Domain=dom;
 	Max=std::pow(10,Domain);
-	Precision=std::pow(10,precision);
 	if(MustInit)
 	{
 		// Compute the number of parameters
@@ -227,7 +226,7 @@ void RTestChoquet::Run(int dom,int precision)
 	}
 
 	clock_t begin = clock();
-	ROptimizeChoquet* m(new ROptimizeChoquet(this,Nbv,NbI,Max,Precision));
+	ROptimizeChoquet* m(new ROptimizeChoquet(this,Nbv,NbI,Max));
 	Search=new BAB<ROptimizeChoquet>(m);
 	delete m;
 	while(ROptimizeChoquet* s=Search->next())
@@ -248,7 +247,7 @@ void RTestChoquet::Print(void) const
 {
 	if((!CurSol)||(!Search))
 		return;
-	std::cout<<"Cost="<<static_cast<double>(CurSol->Cost.val())/static_cast<double>(Precision)<<std::endl;
+	std::cout<<"Cost="<<CurSol->Cost.med()<<std::endl;
 	for(size_t c=0;c<NbChoquets;c++)
 	{
 		std::cout<<"  Choquet "<<c<<std::endl<<"  ";

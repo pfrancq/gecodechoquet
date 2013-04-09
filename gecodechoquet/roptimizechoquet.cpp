@@ -34,11 +34,12 @@
 using namespace R;
 using namespace Gecode;
 using namespace Gecode::Int;
+using namespace Gecode::Float;
 
 
 
 //-----------------------------------------------------------------------------
-void choquetPropagator(Home home,RTestChoquet* test,IntVarArray& v,IntVarArray& i,IntView cost)
+void choquetPropagator(Home home,RTestChoquet* test,IntVarArray& v,IntVarArray& i,FloatView cost)
 {
 	if(home.failed())
 		return;
@@ -54,8 +55,8 @@ void choquetPropagator(Home home,RTestChoquet* test,IntVarArray& v,IntVarArray& 
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-ROptimizeChoquet::ROptimizeChoquet(RTestChoquet* test,size_t nbc,size_t nbi,int max,int precision)
-	: Test(test), v(*this,nbc,0,max), I(*this,nbi,-max,max), Cost(*this,-precision,precision)
+ROptimizeChoquet::ROptimizeChoquet(RTestChoquet* test,size_t nbc,size_t nbi,int max)
+	: Test(test), v(*this,nbc,0,max), I(*this,nbi,-max,max), Cost(*this,-1.0,1.0)
 {
 	// Maximal value <= 1
 	rel(*this,max>=sum(v));
@@ -92,7 +93,7 @@ ROptimizeChoquet::ROptimizeChoquet(RTestChoquet* test,size_t nbc,size_t nbi,int 
 
 //-----------------------------------------------------------------------------
 ROptimizeChoquet::ROptimizeChoquet(bool share, ROptimizeChoquet& s)
-	: MaximizeSpace(share,s), Test(s.Test)
+	: FloatMaximizeSpace(share,s), Test(s.Test)
 {
 	v.update(*this,share,s.v);
 	I.update(*this,share,s.I);
@@ -117,7 +118,7 @@ double ROptimizeChoquet::Iij(size_t id,size_t i,size_t j) const
 //-----------------------------------------------------------------------------
 double ROptimizeChoquet::GetCost(void) const
 {
-	return(static_cast<double>(Cost.val())/Test->Precision);
+	return(Cost.med());
 }
 
 
@@ -129,7 +130,7 @@ Space* ROptimizeChoquet::copy(bool share)
 
 
 //-----------------------------------------------------------------------------
-IntVar ROptimizeChoquet::cost(void) const
+FloatVar ROptimizeChoquet::cost(void) const
 {
 	return(Cost);
 }

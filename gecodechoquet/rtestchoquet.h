@@ -71,11 +71,6 @@ class RTestChoquet
 	Choquet* Choquets;
 
 	/**
-	 * Precision of the cost function.
-	 */
-	int Precision;
-
-	/**
 	 * Domain of the parameters. A domain of 2 supposes each parameters may have
 	 * two digits after the comma.
 	 */
@@ -200,11 +195,9 @@ public:
 
 	/**
 	 * Run the tester.
-    * @param dom             Domain of the parameter.
-    * @param precision       Precision of the solution (By default, 4 number
-	 *                        after the comma).
+    * @param dom             Domain of the parameter (numbers after the comma).
     */
-	void Run(int dom,int precision=4);
+	void Run(int dom);
 
 	/**
 	 * Print the parameter values of the current solution.

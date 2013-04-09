@@ -34,7 +34,7 @@
 
 //-----------------------------------------------------------------------------
 // include files for GeCode
-#include <gecode/minimodel.hh>
+#include <floatoptimizespace.h>
 
 
 //-----------------------------------------------------------------------------
@@ -53,7 +53,7 @@ class RTestChoquet;
  * must be optimized.
  * @short Choquet Integrals Space
  */
-class ROptimizeChoquet : public Gecode::MaximizeSpace
+class ROptimizeChoquet : public Gecode::FloatMaximizeSpace
 {
 	/**
 	 * The tester.
@@ -73,7 +73,7 @@ class ROptimizeChoquet : public Gecode::MaximizeSpace
 	/**
 	 * Cost to maximize.
 	 */
-	Gecode::IntVar Cost;
+	Gecode::FloatVar Cost;
 
 public:
 
@@ -83,9 +83,8 @@ public:
 	 * @param nbc             Total number of Shapley indexes to find.
 	 * @param nbi             Total number of interaction indexes to find.
 	 * @param max             Maximum value of the parameters.
-    * @param precision       Precision of the cost function.
 	 */
-	ROptimizeChoquet(RTestChoquet* test,size_t nbc,size_t nbi,int max,int precision);
+	ROptimizeChoquet(RTestChoquet* test,size_t nbc,size_t nbi,int max);
 
 	/**
 	 * Copy constructor.
@@ -128,7 +127,7 @@ public:
 	 * Get the cost function to optimize.
     * @return Cost.
     */
-	virtual Gecode::IntVar cost(void) const;
+	virtual Gecode::FloatVar cost(void) const;
 
 	/**
 	 * Destructor.

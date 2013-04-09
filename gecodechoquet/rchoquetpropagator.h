@@ -81,7 +81,7 @@ protected:
 	/**
 	 * View on the cost function to maximize.
 	 */
-	Gecode::Int::IntView Cost;
+	Gecode::Float::FloatView Cost;
 
 public:
 
@@ -93,7 +93,7 @@ public:
     * @param i               Interaction indexes to optimize.
     * @param cost            Cost function to optimize.
     */
-	RChoquetPropagator(Gecode::Home home,RTestChoquet* test,Gecode::IntVarArray& V,Gecode::IntVarArray& i,Gecode::Int::IntView cost);
+	RChoquetPropagator(Gecode::Home home,RTestChoquet* test,Gecode::IntVarArray& V,Gecode::IntVarArray& i,Gecode::Float::FloatView cost);
 
 	/**
 	 * Copy constructor.
@@ -112,7 +112,7 @@ public:
     * @param cost            Cost function to optimize.
     * @return the status of operation.
     */
-	static Gecode::ExecStatus post(Gecode::Home home,RTestChoquet* test,Gecode::IntVarArray& V,Gecode::IntVarArray& i,Gecode::Int::IntView cost);
+	static Gecode::ExecStatus post(Gecode::Home home,RTestChoquet* test,Gecode::IntVarArray& V,Gecode::IntVarArray& i,Gecode::Float::FloatView cost);
 
 	/**
 	 * Release the instance.
