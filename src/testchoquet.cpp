@@ -46,19 +46,19 @@ using namespace std;
 
 
 //------------------------------------------------------------------------------
-void DoTestRetrieval(int pres,int res)
+void DoTestRetrieval(int pres)
 {
 	TestRetrieval Retrieval;
-	Retrieval.Run(pres,res);
+	Retrieval.Run(pres);
 	Retrieval.Print();
 }
 
 
 //------------------------------------------------------------------------------
-void DoTestClustering(int pres,int res,bool sims,bool consolidate)
+void DoTestClustering(int pres,bool sims,bool consolidate)
 {
 	TestClustering Clustering(sims,consolidate);
-	Clustering.Run(pres,res);
+	Clustering.Run(pres);
 	Clustering.Print();
 }
 
@@ -69,8 +69,8 @@ int main(int argc, char *argv[])
 	try
 	{
 		setlocale(LC_ALL, "");
-		DoTestClustering(1,4,true,false);
-		DoTestRetrieval(1,4);
+		DoTestClustering(1,true,false);
+		//DoTestRetrieval(1);
 		cout<<"OK"<<endl;
 	}
 	catch(RException& e)
