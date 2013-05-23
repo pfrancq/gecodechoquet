@@ -37,8 +37,9 @@
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-TestClustering::TestClustering(bool sims,bool consolidate)
-	: RTestChoquet(1), NbCourses(4), AvgSim(2,4), MinSim(2), MaxSim(2), PrintSims(sims), PrintConsolidate(consolidate)
+TestClustering::TestClustering(bool add,bool sims,bool consolidate)
+	: RTestChoquet(1), NbCourses(4), AvgSim(2,4), MinSim(2), MaxSim(2), PrintSims(sims),
+	  PrintConsolidate(consolidate), Add(add)
 {
 	SetNbCriteria(0,NbCourses);
 	MinSim.InsertPtr(new RLowerTriangularMatrix(4));
@@ -194,6 +195,16 @@ double TestClustering::Sim(double sim) const
 		sim=1.0;
 	}
 	return(sim);
+}
+
+
+//------------------------------------------------------------------------------
+void TestClustering::AddConstraints(ROptimizeChoquet& home)
+{
+	if(!Add) return;
+	rel(home,home.vi(0,1,0)>home.vi(0,0,0));   // vp>vm
+	rel(home,home.vi(0,1,0)>home.vi(0,2,0));   // vp>ve
+	rel(home,home.vi(0,1,0)>home.vi(0,3,0));   // vp>vl
 }
 
 

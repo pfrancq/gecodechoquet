@@ -62,9 +62,9 @@ int ResultItem::Compare(const ResultItem& res) const
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-TestRetrieval::TestRetrieval(void)
+TestRetrieval::TestRetrieval(bool add)
 	: RTestChoquet(1), NbDocs(7), NbCriteria(4), Scores(NbDocs,NbCriteria),
-	  Res1(5), Res2(5)
+	  Res1(5), Res2(5), Add(add)
 {
 	SetNbCriteria(0,NbCriteria);
 }
@@ -107,6 +107,17 @@ void TestRetrieval::Init(void)
 	Res2.InsertPtr(new ResultItem(4,false));
 	Res2.InsertPtr(new ResultItem(5,true));
 	Res2.InsertPtr(new ResultItem(6,true));
+}
+
+
+//------------------------------------------------------------------------------
+void TestRetrieval::AddConstraints(ROptimizeChoquet& home)
+{
+	if(!Add) return;
+	if(!Add) return;
+	rel(home,home.vi(0,0,0)>home.vi(0,1,0));   // vr>vf
+	rel(home,home.vi(0,0,0)>home.vi(0,2,0));   // vr>vn
+	rel(home,home.vi(0,0,0)>home.vi(0,3,0));   // vr>vh
 }
 
 

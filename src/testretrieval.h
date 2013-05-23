@@ -118,12 +118,23 @@ class TestRetrieval : public RTestChoquet
 	 */
 	RContainer<ResultItem,true,false> Res2;
 
+	/**
+	 *	Additional constraints ?
+    */
+	bool Add;
+
 public:
 
 	/**
 	 * Constructor.
+	 * @param add             Add some constraints to the problem ?
     */
-	TestRetrieval(void);
+	TestRetrieval(bool add);
+	
+	/**
+	 * Toggle the status of the additional constraints.
+	 */
+	void ToggleAdd(void) {Add=!Add;}
 
 	/**
 	 * Set the scores of a document for the different courses.
@@ -137,6 +148,12 @@ public:
 	 * two query results.
     */
 	virtual void Init(void);
+
+	/**
+	 * Add eventually some constraints between the criteria.
+    * @param home            Space to optimize.
+    */
+	virtual void AddConstraints(ROptimizeChoquet& home);
 
 	/**
 	 * Compute the F measure at the third position for a given query result.

@@ -32,8 +32,7 @@
 
 //-----------------------------------------------------------------------------
 // include files for R Project
-#include <rmatrix.h>
-#include <rlowertriangularmatrix.h>
+#include <rapplication.h>
 using namespace R;
 using namespace std;
 
@@ -46,32 +45,116 @@ using namespace std;
 
 
 //------------------------------------------------------------------------------
-void DoTestRetrieval(int pres)
+//
+// class TestChoquet
+//
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
+class TestChoquet : public RApplication
 {
-	TestRetrieval Retrieval;
-	Retrieval.Run(pres);
-	Retrieval.Print();
+	/**
+	 * Output file.
+	 */
+	RTextFile* Output;
+
+	/**
+	 * Precision
+    */
+	int Precision;
+
+	/**
+	 * Additional constraints ?
+    */
+	bool Add;
+
+	/**
+	 * Retrieval Task ?
+    */
+	bool RetrievalTask;
+
+	/**
+	 * Number of runs.
+    */
+	size_t NbRuns;
+
+public:
+	TestChoquet(int argc, char** argv);
+	virtual void Run(void);
+	~TestChoquet(void);
+};
+
+
+//------------------------------------------------------------------------------
+TestChoquet::TestChoquet(int argc, char** argv)
+	: RApplication("TestChoquet",argc,argv), Output(0)
+{
+	RString Val;
+	if(GetParamValue("o",Val))
+	{
+		Output=new RTextFile(Val);
+		Output->Open(RIO::Append);
+	}
+	if(GetParamValue("p",Val))
+		Precision=Val.ToInt();
+	else
+		Precision=1;
+	Add=GetParamValue("a",Val);
+	RetrievalTask=GetParamValue("r",Val);
 }
 
 
 //------------------------------------------------------------------------------
-void DoTestClustering(int pres,bool sims,bool consolidate)
+void TestChoquet::Run(void)
 {
-	TestClustering Clustering(sims,consolidate);
-	Clustering.Run(pres);
-	Clustering.Print();
+	if(RetrievalTask)
+	{
+		TestRetrieval Retrieval(Add);
+		Retrieval.Run(Precision);
+		if(Add)
+			Retrieval.Print("Retrieval task (constrained)",Output,true);
+		else
+			Retrieval.Print("Retrieval task",Output,true);
+	}
+	else
+	{
+		// Test Clustering
+		TestClustering Clustering(Add,true,false);
+		Clustering.Run(Precision);
+		if(Add)
+			Clustering.Print("Clustering task (constrained)",Output,true);
+		else
+			Clustering.Print("Clustering task",Output,true);
+	}
 }
 
+
+//------------------------------------------------------------------------------
+TestChoquet::~TestChoquet(void)
+{
+	if(Output)
+	{
+		delete Output;
+		Output=0;
+	}
+}
+
+
+
+//------------------------------------------------------------------------------
+//
+// Main
+//
+//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
 	try
 	{
-		setlocale(LC_ALL, "");
-		DoTestClustering(1,true,false);
-		//DoTestRetrieval(1);
-		cout<<"OK"<<endl;
+		TestChoquet App(argc,argv);
+		App.Execute();
 	}
 	catch(RException& e)
 	{
@@ -85,6 +168,5 @@ int main(int argc, char *argv[])
 	{
 		cout<<"Unknown error"<<endl;
 	}
-	cout<<"Finish"<<endl;
-	return EXIT_SUCCESS;
+	return(EXIT_SUCCESS);
 }

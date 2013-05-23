@@ -90,14 +90,25 @@ class TestClustering : public RTestChoquet
 	 */
 	bool PrintConsolidate;
 
+	/**
+	 *	Additional constraints ?
+    */
+	bool Add;
+
 public:
 
 	/**
 	 * Constructor.
+	 * @param add             Add some constraints to the problem ?
     * @param sims            Print the similarity matrix?
     * @param consolidate     Print the average, minimum and maximum matrices?
     */
-	TestClustering(bool sims,bool consolidate);
+	TestClustering(bool add,bool sims,bool consolidate);
+
+	/**
+	 * Toggle the status of the additional constraints.
+	 */
+	void ToggleAdd(void) {Add=!Add;}
 
 	/**
 	 * Verify if two students are in the same group.
@@ -136,6 +147,12 @@ public:
     * @return the similarity tested.
     */
 	double Sim(double sim) const;
+
+	/**
+	 * Add eventually some constraints between the criteria.
+    * @param home            Space to optimize.
+    */
+	virtual void AddConstraints(ROptimizeChoquet& home);
 
 	/**
 	 * Compute a ratio to maximize between the intra- and inter-cluster
