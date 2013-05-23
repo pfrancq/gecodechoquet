@@ -102,6 +102,20 @@ ROptimizeChoquet::ROptimizeChoquet(bool share, ROptimizeChoquet& s)
 
 
 //-----------------------------------------------------------------------------
+Gecode::IntVar& ROptimizeChoquet::vi(size_t id,size_t i,size_t)
+{
+	return(v[Test->GetviId(id,i)]);
+}
+
+
+//-----------------------------------------------------------------------------
+Gecode::IntVar& ROptimizeChoquet::Iij(size_t id,size_t i,size_t j,size_t)
+{
+	return(I[Test->GetIijId(id,i,j)]);
+}
+
+
+//-----------------------------------------------------------------------------
 double ROptimizeChoquet::vi(size_t id,size_t i) const
 {
 	return(static_cast<double>(v[Test->GetviId(id,i)].val())/Test->Max);

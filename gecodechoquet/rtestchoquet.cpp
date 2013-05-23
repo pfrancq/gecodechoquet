@@ -36,6 +36,7 @@
 //-----------------------------------------------------------------------------
 // include files for GeCode
 #include <rtestchoquet.h>
+using namespace std;
 using namespace R;
 using namespace Gecode;
 using namespace Gecode::Int;
@@ -243,35 +244,55 @@ void RTestChoquet::Run(int dom)
 
 
 //------------------------------------------------------------------------------
-void RTestChoquet::Print(void) const
+void RTestChoquet::Print(const RString& title,RTextFile* output,bool screen) const
 {
 	if((!CurSol)||(!Search))
 		return;
-	std::cout<<"Cost="<<CurSol->Cost.med()<<std::endl;
+	RString Out;
+	if(title!=RString::Null)
+		Out=title+" ; ";
+	Out+="Cost="+RString::Number(CurSol->Cost.med())+" (domain="+RString::Number(Domain)+")";
+	if(screen)
+		cout<<Out<<endl;
+	if(output)
+		(*output)<<Out<<endl;
 	for(size_t c=0;c<NbChoquets;c++)
 	{
-		std::cout<<"  Choquet "<<c<<std::endl<<"  ";
+		Out="  Choquet "+RString::Number(c);
+		if(screen)
+			cout<<Out<<endl;
+		if(output)
+			(*output)<<Out<<endl;
 
+
+		// Capacities
+		Out="  ";
 		for(size_t i=0;i<4;i++)
-		{
-			char tmp[6];
-			sprintf(tmp,"%1.4f",CurSol->vi(c,i));
-			std::cout<<"  v"<<i+1<<"="<<tmp<<"  ";
-		}
-		std::cout<<std::endl;
+			Out+=" v"+RString::Number(i+1)+"="+RString::Number(CurSol->vi(c,i),"%1.4f")+" ";
+		if(screen)
+			cout<<Out<<endl;
+		if(output)
+			(*output)<<Out<<endl;
+
+		// Interactions
 		for(size_t i=0;i<Choquets[c].NbCriteria-1;i++)
 		{
-			std::cout<<"  ";
+			Out="  ";
 			for(size_t j=i+1;j<Choquets[c].NbCriteria;j++)
-			{
-				char tmp[6];
-				sprintf(tmp,"%1.4f",CurSol->Iij(c,i,j));
-				std::cout<<"  I"<<i+1<<j+1<<"="<<tmp<<" ";
-			}
-			std::cout<<std::endl;
+				Out+=" I"+RString::Number(i+1)+","+RString::Number(j+1)+"="+RString::Number(CurSol->Iij(c,i,j),"%1.4f")+" ";
+			if(screen)
+				cout<<Out<<endl;
+			if(output)
+				(*output)<<Out<<endl;
 		}
 	}
-	std::cout<<ElapsedSecs<<" sec ("<<Search->statistics().node<<" nodes expanded)"<<std::endl<<std::endl;
+
+	// Statistics
+	Out=RString::Number(ElapsedSecs)+" sec ("+RString::Number(Search->statistics().node)+" nodes expanded)";
+	if(screen)
+			cout<<Out<<endl;
+		if(output)
+			(*output)<<Out<<endl;
 }
 
 

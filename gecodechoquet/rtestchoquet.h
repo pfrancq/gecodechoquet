@@ -38,10 +38,17 @@
 
 
 //-----------------------------------------------------------------------------
+// include files for R Library
+#include <rtextfile.h>
+
+
+//-----------------------------------------------------------------------------
 // include files for GeCode
 #include <gecode/search.hh>
 #include <roptimizechoquet.h>
 #include <rchoquetpropagator.h>
+
+
 
 
 //-----------------------------------------------------------------------------
@@ -201,8 +208,12 @@ public:
 
 	/**
 	 * Print the parameter values of the current solution.
+	 * @param title           Title to print (can be RString::Null).
+	 * @param output          If not null, print the results in a text file.
+	 * @param screen          Specify if the results must be printed on the
+	 *                        standard output.
     */
-	void Print(void) const;
+	void Print(const RString& title,RTextFile* output,bool screen) const;
 
 	/**
 	 * Destructor.

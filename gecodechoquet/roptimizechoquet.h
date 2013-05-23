@@ -55,6 +55,8 @@ class RTestChoquet;
  */
 class ROptimizeChoquet : public Gecode::FloatMaximizeSpace
 {
+protected:
+
 	/**
 	 * The tester.
 	 */
@@ -92,6 +94,27 @@ public:
     * @param s               Solution to copy.
     */
 	ROptimizeChoquet(bool share, ROptimizeChoquet& s);
+
+	/**
+	 * Get the value of a given Shapley index for a particular Choquet integral.
+    * @param id              Identifier of the Choquet integral
+    * @param i               Identifier of the criteria.
+	 * @param dummy           This parameter is just used to distinct methods.
+	 *                        Its values has no importance.
+    * @return the Shapley index.
+    */
+	Gecode::IntVar& vi(size_t id,size_t i,size_t dummy);
+
+	/**
+	 * Get the value of an interaction index for a particular Choquet integral.
+    * @param id              Identifier of the Choquet integral
+    * @param i               Identifier of the first criteria.
+    * @param j               Identifier of the second criteria.
+	 * @param dummy           This parameter is just used to distinct methods.
+	 *                        Its values has no importance.
+    * @return the interaction index.
+    */
+	Gecode::IntVar& Iij(size_t id,size_t i,size_t j,size_t dummy);
 
 	/**
 	 * Get the value of a given Shapley index for a particular Choquet integral.
