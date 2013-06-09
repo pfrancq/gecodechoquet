@@ -59,26 +59,6 @@ class TestChoquet : public RApplication
 	 */
 	RTextFile* Output;
 
-	/**
-	 * Precision
-    */
-	int Precision;
-
-	/**
-	 * Additional constraints ?
-    */
-	bool Add;
-
-	/**
-	 * Retrieval Task ?
-    */
-	bool RetrievalTask;
-
-	/**
-	 * Number of runs.
-    */
-	size_t NbRuns;
-
 public:
 	TestChoquet(int argc, char** argv);
 	virtual void Run(void);
@@ -96,36 +76,38 @@ TestChoquet::TestChoquet(int argc, char** argv)
 		Output=new RTextFile(Val);
 		Output->Open(RIO::Append);
 	}
-	if(GetParamValue("p",Val))
-		Precision=Val.ToInt();
-	else
-		Precision=1;
-	Add=GetParamValue("a",Val);
-	RetrievalTask=GetParamValue("r",Val);
 }
 
 
 //------------------------------------------------------------------------------
 void TestChoquet::Run(void)
 {
-	if(RetrievalTask)
+	// Test Clustering
+	cout<<"Init Clustering"<<endl;
+	TestClustering Clustering(false,false,false);
+	for(int i=1;i<3;i++)
 	{
-		TestRetrieval Retrieval(Add);
-		Retrieval.Run(Precision);
-		if(Add)
-			Retrieval.Print("Retrieval task (constrained)",Output,true);
-		else
-			Retrieval.Print("Retrieval task",Output,true);
+		cout<<"  Run ("<<i<<")"<<endl;
+		Clustering.Run(i);
+		Clustering.Print("Clustering task",Output,Output==0);
+		Clustering.ToggleAdd();
+		cout<<"  Run ("<<i<<",constrained)"<<endl;
+		Clustering.Run(i);
+		Clustering.Print("Clustering task (constrained)",Output,Output==0);
 	}
-	else
+
+	// Retrieval Task
+	cout<<"Init Retrieval"<<endl;
+	TestRetrieval Retrieval(false);
+	for(int i=1;i<3;i++)
 	{
-		// Test Clustering
-		TestClustering Clustering(Add,true,false);
-		Clustering.Run(Precision);
-		if(Add)
-			Clustering.Print("Clustering task (constrained)",Output,true);
-		else
-			Clustering.Print("Clustering task",Output,true);
+		cout<<"  Run ("<<i<<")"<<endl;
+		Retrieval.Run(i);
+		Retrieval.Print("Retrieval task",Output,Output==0);
+		Retrieval.ToggleAdd();
+		cout<<"  Run ("<<i<<",constrained)"<<endl;
+		Retrieval.Run(i);
+		Retrieval.Print("Retrieval task (constrained)",Output,Output==0);
 	}
 }
 

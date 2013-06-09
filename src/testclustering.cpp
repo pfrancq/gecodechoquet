@@ -27,6 +27,8 @@
 //-----------------------------------------------------------------------------
 // include files for project
 #include <testclustering.h>
+using namespace Gecode;
+using namespace Gecode::Int;
 
 
 
@@ -63,11 +65,19 @@ double TestClustering::SimScores(double score1,double score2)
 /*	if((note1<4.0)&&(note2<4.0))
 		return(0.0);
 	double Sim(1.0-(fabs(note1-note2)/10));*/
-	double Sim;
+/*	double Sim;
 	if(    (score1<=5.0)&&(score2<=5.0) ||   (score1>5.0)&&(score2>5.0)   )
 		Sim=((5.0-fabs(score1-score2))/10.0)+0.5;
 	else
 		Sim=(10.0-fabs(score1-score2))/20.0;
+	return(Sim);*/
+	double Sim;
+	if( ((score1<5.0)&&(score2>=5.0)) || ((score1>=5.0)&&(score2<5.0)) )
+		Sim=(10.0-fabs(score1-score2))/20.0;
+	else if((score1>=5.0)&&(score2>=5.0))
+		Sim=0.5+(score1+score2-10)/20.0;
+	else
+		Sim=0.0;
 	return(Sim);
 }
 
@@ -201,10 +211,43 @@ double TestClustering::Sim(double sim) const
 //------------------------------------------------------------------------------
 void TestClustering::AddConstraints(ROptimizeChoquet& home)
 {
+	// Avoid multiple combinations giving the same cost function
+	for(size_t i=0;i<3;i++)
+		for(size_t j=i+1;j<4;j++)
+		{
+			BoolVar tmp[8];
+			size_t idx(0);
+
+			// Constraints on I_ij and v_i and v_j
+			tmp[idx++]=expr(home,((home.Iij(0,i,j,0)!=0)&&(home.Iij(0,i,j,0)!=2)&&(2*home.vi(0,i,0)==home.Iij(0,i,j,0))&&(2*home.vi(0,j,0)==home.Iij(0,i,j,0))));
+
+			// Constraints on v_n with n<>i and n<>j
+			for(size_t n=0;n<4;n++)
+			{
+				if((n==i)||(n==j))
+					continue;
+				tmp[idx]=expr(home,tmp[idx-1]&&(home.vi(0,n,0)==0));
+				idx++;
+			}
+
+			for(size_t l=0;l<3;l++)
+			{
+				for(size_t m=l+1;m<4;m++)
+				{
+					if((l==i)&&(m==j))
+						continue;
+					tmp[idx]=expr(home,tmp[idx-1]&&(home.Iij(0,l,m,0)==0));
+						idx++;
+				}
+			}
+			rel(home,!tmp[7]);
+		}
+
+
 	if(!Add) return;
-	rel(home,home.vi(0,1,0)>home.vi(0,0,0));   // vp>vm
-	rel(home,home.vi(0,1,0)>home.vi(0,2,0));   // vp>ve
-	rel(home,home.vi(0,1,0)>home.vi(0,3,0));   // vp>vl
+	rel(home,home.vi(0,2,0)<=home.vi(0,0,0));   // ve<vm
+	rel(home,home.vi(0,2,0)<=home.vi(0,1,0));   // ve<vp
+	rel(home,home.vi(0,2,0)<=home.vi(0,3,0));   // ve<vl
 }
 
 
