@@ -157,6 +157,8 @@ public:
     */
 	virtual ~ROptimizeChoquet(void);
 
+	void print(void) const;
+
 	friend class RTestChoquet;
 };
 

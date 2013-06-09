@@ -127,6 +127,12 @@ public:
 	RTestChoquet(size_t nbchoquets);
 
 	/**
+	 * The method returns the maximum absolute value of the parameters of the
+	 * current run.
+    */
+	int GetMaxAbsVal(void) const {return(Max);}
+
+	/**
 	 * Set the number of criteria for a given Choquet integral.
     * @param choquet         Identifier of the Choquet integral.
     * @param nb              Number of parameters.

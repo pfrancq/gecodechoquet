@@ -235,6 +235,7 @@ void RTestChoquet::Run(int dom)
 		if(CurSol)
 			delete CurSol;
 		CurSol=s;
+		//s->print();
 	}
 	clock_t end = clock();
 

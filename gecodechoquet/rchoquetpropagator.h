@@ -62,7 +62,7 @@ class RTestChoquet;
 class RChoquetPropagator : public Gecode::Propagator
 {
 protected:
-
+	
 	/**
 	 * The tester.
 	 */

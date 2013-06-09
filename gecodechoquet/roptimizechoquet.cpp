@@ -151,6 +151,13 @@ FloatVar ROptimizeChoquet::cost(void) const
 
 
 //-----------------------------------------------------------------------------
+void ROptimizeChoquet::print(void) const
+{
+	std::cout<<v<< " "<<I<<" "<<Cost<<std::endl;
+}
+
+
+//-----------------------------------------------------------------------------
 ROptimizeChoquet::~ROptimizeChoquet(void)
 {
 }
