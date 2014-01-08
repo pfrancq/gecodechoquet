@@ -6,7 +6,7 @@
 
 	Test the parameters for Choquet integrals - Implementation.
 
-	Copyright 2012-2013 by Pascal Francq (pascal@francq.info).
+	Copyright 2012-2014 by Pascal Francq (pascal@francq.info).
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -165,6 +165,24 @@ ROptimizeChoquet* RTestChoquet::GetBestSol(void) const
 
 
 //------------------------------------------------------------------------------
+double RTestChoquet::vi(size_t id,size_t i) const
+{
+	if(!CurSol)
+		mThrowRException("No solution y computed");
+	return(CurSol->vi(id,i));
+}
+
+
+//------------------------------------------------------------------------------
+double RTestChoquet::Iij(size_t id,size_t i,size_t j) const
+{
+	if(!CurSol)
+		mThrowRException("No solution y computed");
+	return(CurSol->Iij(id,i,j));
+}
+
+
+//------------------------------------------------------------------------------
 double RTestChoquet::GetComputedTime(void) const
 {
 	return(ElapsedSecs);
@@ -228,6 +246,8 @@ void RTestChoquet::Run(int dom)
 
 	clock_t begin = clock();
 	ROptimizeChoquet* m(new ROptimizeChoquet(this,Nbv,NbI,Max));
+	Search::Options Opt;
+	Opt.threads=6;
 	Search=new BAB<ROptimizeChoquet>(m);
 	delete m;
 	while(ROptimizeChoquet* s=Search->next())

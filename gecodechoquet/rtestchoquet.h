@@ -6,7 +6,7 @@
 
 	Test the parameters for Choquet integrals - Header.
 
-	Copyright 2012-2013 by Pascal Francq (pascal@francq.info).
+	Copyright 2012-2014 by Pascal Francq (pascal@francq.info).
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -170,6 +170,25 @@ public:
 	ROptimizeChoquet* GetBestSol(void) const;
 
 	/**
+	 * Get the value of a given Shapley index for a particular Choquet integral
+	 * of the best solution computed.
+    * @param id              Identifier of the Choquet integral
+    * @param i               Identifier of the criteria.
+    * @return the Shapley index.
+    */
+	double vi(size_t id,size_t i) const;
+
+	/**
+	 * Get the value of an interaction index for a particular Choquet integral of
+	 * the best solution computed.
+    * @param id              Identifier of the Choquet integral
+    * @param i               Identifier of the first criteria.
+    * @param j               Identifier of the second criteria.
+    * @return the interaction index.
+    */
+	double Iij(size_t id,size_t i,size_t j) const;
+
+	/**
 	 * Get the computed time of the last run.
     * @return the elapsed time in seconds.
     */
@@ -224,7 +243,7 @@ public:
 	/**
 	 * Destructor.
     */
-	~RTestChoquet(void);
+	virtual ~RTestChoquet(void);
 
 	friend class RChoquetPropagator;
 	friend class ROptimizeChoquet;
