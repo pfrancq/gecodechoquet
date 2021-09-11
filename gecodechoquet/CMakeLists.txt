@@ -1,36 +1,33 @@
-PROJECT(gecodechoquet)
+cmake_minimum_required(VERSION 2.6)
 
-SET(gecodechoquet_INST_INCLUDES
-    rchoquetpropagator.h
-    roptimizechoquet.h
-    rtestchoquet.h
-)
+CONFIGURE_FILE(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+  IMMEDIATE @ONLY)
 
-SET(gecodechoquet_TARGET_SOURCES
-    rchoquetpropagator.cpp
-    roptimizechoquet.cpp
-    rtestchoquet.cpp
-)
+ADD_CUSTOM_TARGET(uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 
-INCLUDE_DIRECTORIES(. ${GECODE_INCLUDE_DIR} ${gecodechoquet_INCLUDES})
+IF(CMAKE_COMPILER_IS_GNUCC)
+  MESSAGE(STATUS "Using GNU C Compiler, set -fmessage-length to 0 (Eclipse support)")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
+ENDIF(CMAKE_COMPILER_IS_GNUCC)
+IF(CMAKE_COMPILER_IS_GNUCXX)
+    MESSAGE(STATUS "Using GNU C++ Compiler, set -fmessage-length to 0 (Eclipse support)")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
+OPTION(rcmake-verbose "Enable verbose output during cmake construction" OFF)
 
-IF(WIN32)
-    ADD_LIBRARY(gecodechoquet STATIC ${gecodechoquet_TARGET_SOURCES})
-    SET_TARGET_PROPERTIES(gecodechoquet PROPERTIES LINK_FLAGS "/NODEFAULTLIB:MSVCRTD;MSVCRT;LIBCMT;LIBCMTD")
-    TARGET_LINK_LIBRARIES(gecodechoquet rmath rcore ${Gecode_LIBRARIES})
-ELSE(WIN32)
-    ADD_LIBRARY(gecodechoquet SHARED ${gecodechoquet_TARGET_SOURCES})
-    #ADD_SOURCE_FILE(gecodechoquet gecodechoquet_INCLUDES)
-    TARGET_LINK_LIBRARIES(gecodechoquet rcore rmath dl ${Gecode_LIBRARIES})
-    SET_TARGET_PROPERTIES(gecodechoquet PROPERTIES LT_VERSION_CURRENT 1
-                                               VERSION 1.0.0
-                                               SOVERSION 1)
-    INSTALL(TARGETS gecodechoquet LIBRARY DESTINATION lib)
-ENDIF(WIN32)
+IF(UNIX)
+    ADD_DEFINITIONS("-fexceptions")
+    MESSAGE(STATUS "C++ exceptions will be re-enabled (since KDE3 detection disable them)")
+    ADD_DEFINITIONS("-pedantic")
+    ADD_DEFINITIONS("-Wno-long-long")
+    ADD_DEFINITIONS("-DPIC")
+ELSE(UNIX)
+    ADD_DEFINITIONS("/D_RCORE_DLLAPI_")
+ENDIF(UNIX)
 
-IF(rcmake-verbose)
-    PRINT_LIST_WITH_MESSAGE("Will install the following header files for gecodechoquet:" gecodechoquet_INST_INCLUDES)
-ENDIF(rcmake-verbose)
-
-INSTALL(FILES ${gecodechoquet_INST_INCLUDES} DESTINATION include/r/gecodechoquet)
+INCLUDE(rfinder.cmake)
+INCLUDE(prj.cmake)
